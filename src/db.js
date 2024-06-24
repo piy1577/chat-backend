@@ -17,7 +17,9 @@ const connect = async (app, PORT) => {
     try {
         await mongoose.connect(uri);
         app.listen(PORT, () => {
-            console.log(`Server is running \x1b[34m http://localhost:${PORT}`);
+            console.log(
+                `Server is running \x1b[34m http://localhost:${PORT}\x1b[0m`
+            );
         });
     } catch (err) {
         console.log(err);

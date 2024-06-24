@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Application</title>
+    <link rel="stylesheet" type="text/css" href="../css/tailwind.css">
+    <base href="/">
+</head>
+<body class="p-4 w-screen h-screen flex flex-col items-center" >
+    <h1 class="text-4xl sm:text-6xl  font-bold mb-4 text-center">Reset Password</h1>
+    <div class="flex w-full sm:w-4/5 flex-col">
+        <h1 class="text-xl mb-1" ><span class="font-semibold">Hello</span> <%= email %></h1>
+        <form method="post" class="flex flex-col gap-2">
+            <label for="password" class="text-lg font-semibold">Update Name: </label>
+            <input type="email" value="<%=email %>" name="email" class=" hidden">
+            <input type="text"  class=" w-full border-2 rounded-md p-2 border-black" placeholder="Type your Name...  " name="name" required>
+            <button type="submit" class="w-40 bg-blue-100 hover:bg-blue-2 p-3 rounded-lg">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
