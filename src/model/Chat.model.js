@@ -13,6 +13,7 @@ const chatSchema = new mongoose.Schema({
                 message: { type: String },
                 seenBy: {
                     type: [mongoose.Schema.Types.ObjectId],
+                    ref: "User",
                     default: [],
                 },
             },
