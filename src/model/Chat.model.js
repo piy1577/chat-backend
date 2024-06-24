@@ -11,11 +11,6 @@ const chatSchema = new mongoose.Schema({
             {
                 sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
                 message: { type: String },
-                seenBy: {
-                    type: [mongoose.Schema.Types.ObjectId],
-                    ref: "User",
-                    default: [],
-                },
             },
         ],
         default: [],

@@ -1,17 +1,13 @@
 const { Router } = require("express");
+const {
+    createChat,
+    createGroup,
+    fetchMessage,
+} = require("../controller/Chat.controller");
 
 const chatRouter = Router();
-
-chatRouter.post("/sendMessage", (req, res) => {
-    res.send("sendMessage");
-});
-
-chatRouter.get("/getMessages", (req, res) => {
-    res.send("getMessages");
-});
-
-chatRouter.post("/new", (req, res) => {
-    res.send("new");
-});
+chatRouter.post("/group", createGroup);
+chatRouter.post("/", createChat);
+chatRouter.get("/", fetchMessage);
 
 module.exports = chatRouter;
