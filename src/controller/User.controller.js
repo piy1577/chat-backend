@@ -66,7 +66,7 @@ const forgotPassword = async (req, res) => {
         return res.status(404).json({ message: "User not found" });
     }
     const token = jwt.sign({ email }, secret, { expiresIn: "30m" });
-    const link = `http://${req.headers.host}/user/reset-password?token=${token}`;
+    const link = `${req.protocol}://${req.headers.host}/user/reset-password?token=${token}`;
     const mailOptions = {
         from: process.env.EMAIL,
         to: email,
@@ -127,7 +127,7 @@ const updateName = async (req, res) => {
     const newToken = jwt.sign({ email: user.email }, secret, {
         expiresIn: "30m",
     });
-    const link = `http://${req.headers.host}/user/reset-name?token=${newToken}`;
+    const link = `${req.protocol}://${req.headers.host}/user/reset-name?token=${newToken}`;
     const mailOptions = {
         from: process.env.EMAIL,
         to: email,
