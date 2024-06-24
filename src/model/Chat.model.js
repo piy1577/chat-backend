@@ -6,14 +6,19 @@ const chatSchema = new mongoose.Schema({
         type: [mongoose.Schema.Types.ObjectId],
         qef: "User",
     },
-    messages: [
-        {
-            sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-            message: { type: String },
-            seen: { type: Boolean, default: false },
-        },
-    ],
+    messages: {
+        type: [
+            {
+                sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+                message: { type: String },
+                seenBy: {
+                    type: [mongoose.Schema.Types.ObjectId],
+                    default: [],
+                },
+            },
+        ],
+        default: [],
+    },
 });
-
 
 module.exports = mongoose.model("Chat", chatSchema);
