@@ -12,6 +12,7 @@ app.use(
 );
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "..", "views")));
 app.set("view engine", "ejs");
 app.get("/", (req, res) => {
     res.send("Hello World");
