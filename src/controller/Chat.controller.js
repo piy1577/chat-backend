@@ -12,12 +12,14 @@ const createChat = async (req, res) => {
 
     const user = await User.findById(decoded.id);
     if (!user) {
-        return res.status(401).send("You are not authorized to create a chat");
+        return res
+            .status(401)
+            .json({ message: "You are not authorized to create a chat" });
     }
 
     const contact = await User.findOne({ email: email });
     if (!contact) {
-        return res.status(400).send("User not Register");
+        return res.status(400).json({ message: "User not Register" });
     }
 
     const chats = await Promise.all(
@@ -29,7 +31,7 @@ const createChat = async (req, res) => {
     });
 
     if (!validate) {
-        return res.status(400).send("Contact already exists");
+        return res.status(400).json({ message: "Contact already exists" });
     }
 
     const chat = await Chat.create({
