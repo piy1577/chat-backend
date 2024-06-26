@@ -194,8 +194,11 @@ const getContacts = async (req, res) => {
     const contact = user.chat.map(async (chat) => {
         const message = await Chat.findById(chat);
         if (message.users.length === 2) {
-            const anotherUserId = message.users.find((u) => u !== user._id);
+            const anotherUserId = message.users.find(
+                (u) => u.toString() !== user._id.toString()
+            );
             const anotherUser = await User.findById(anotherUserId);
+
             return {
                 id: message._id,
                 name: anotherUser.name,
