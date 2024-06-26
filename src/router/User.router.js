@@ -22,6 +22,6 @@ userRouter.put("/forgotPassword", forgotPassword);
 userRouter.get("/reset-password", resetPassword);
 userRouter.post("/reset-password", changePassword);
 userRouter.get("/getContacts", getContacts);
-userRouter.get("/me", Me);
+userRouter.get("/", Me);
 
 module.exports = userRouter;
