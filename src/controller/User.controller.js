@@ -199,21 +199,25 @@ const getContacts = async (req, res) => {
             return {
                 id: message._id,
                 name: anotherUser.name,
-                message: message.messages[0].message,
-                seen: message.seenBy.includes(user._id),
+                message:
+                    message.messages.length === 0
+                        ? []
+                        : message.messages[0].message,
             };
         } else {
             return {
                 id: message._id,
                 name: message.name,
-                message: message.messages[0].message,
-                seen: message.seenBy.includes(user._id),
+                message:
+                    message.messages.length === 0
+                        ? []
+                        : message.messages[0].message,
             };
         }
     });
     return res
         .status(200)
-        .json(contact.length === 0 ? [] : Promise.all(contact));
+        .json(contact.length === 0 ? [] : await Promise.all(contact));
 };
 
 module.exports = {
