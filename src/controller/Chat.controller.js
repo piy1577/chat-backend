@@ -151,8 +151,9 @@ const sendMessage = async (io, users, chatId, userId, message) => {
     await Chat.findByIdAndUpdate(chatId, {
         messages,
     });
-
+    console.log(users);
     chat.users.forEach((user) => {
+        console.log(user);
         if (
             user.toString() !== userId &&
             users.some((u) => u.userId === user.toString())
