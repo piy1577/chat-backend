@@ -176,7 +176,9 @@ const socket = (server) => {
 
     io.on("connection", (socket) => {
         socket.on("addUser", (userId) => {
+            console.log("addUser", userId);
             if (!users.some((user) => user.userId === userId)) {
+                console.log("addUser2: running");
                 users.push({ userId, socketId: socket.id });
             }
             io.emit("getUsers", users);
