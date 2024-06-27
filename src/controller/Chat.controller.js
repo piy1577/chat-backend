@@ -117,7 +117,10 @@ const fetchMessage = async (req, res) => {
             info: { name: chat.name, id: chat._id },
         });
     } else {
-        const contact = chat.users.find((userId) => userId !== user._id);
+        const contact = chat.users.find(
+            (userId) => userId.toString() !== user._id.toString()
+        );
+
         const contactDetails = await User.findById(contact);
         const messages = chat.messages.map((message) => {
             return {
