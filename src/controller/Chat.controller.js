@@ -154,14 +154,12 @@ const sendMessage = async (io, chatId, userId, message) => {
     console.log(users);
     chat.users.forEach((user) => {
         console.log(user);
-        if (
-            user.toString() !== userId &&
-            users.some((u) => u.userId === user.toString())
-        ) {
+        if (user.toString() !== userId) {
             const socketId = users.find(
                 (u) => u.userId === user.toString()
             ).socketId;
-            io.to(socketId).emit("getMessage", { chatId, userId, message });
+            console.log(socketId);
+            // io.to(socketId).emit("getMessage", { chatId, userId, message });
         }
     });
 };
