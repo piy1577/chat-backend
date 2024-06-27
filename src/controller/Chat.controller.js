@@ -167,7 +167,7 @@ const sendMessage = async (io, users, chatId, userId, message) => {
 const socket = (server) => {
     const io = socketio(server, {
         cors: {
-            origin: "http://localhost:3000",
+            origin: "*",
             methods: ["GET", "POST"],
         },
     }).of("/chat");
