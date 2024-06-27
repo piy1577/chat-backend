@@ -181,7 +181,7 @@ const Me = async (req, res) => {
     if (!user) {
         return res.status(401).json({ message: "User not found" });
     }
-    res.status(200).json({ name: user.name, email: user.email });
+    res.status(200).json({ id: user._id, name: user.name, email: user.email });
 };
 
 const getContacts = async (req, res) => {
