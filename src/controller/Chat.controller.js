@@ -3,7 +3,7 @@ const User = require("../model/User.model");
 const jwt = require("jsonwebtoken");
 const secret = process.env.SECRET;
 const socketio = require("socket.io");
-let users = [];
+
 const createChat = async (req, res) => {
     const token = req.headers.authorization.split(" ")[1];
     const { email } = req.body;
@@ -151,9 +151,8 @@ const sendMessage = async (io, users, chatId, userId, message) => {
     await Chat.findByIdAndUpdate(chatId, {
         messages,
     });
-    console.log(users);
+
     chat.users.forEach((user) => {
-        console.log(user);
         if (
             user.toString() !== userId &&
             users.some((u) => u.userId === user.toString())
@@ -173,7 +172,7 @@ const socket = (server) => {
             methods: ["GET", "POST"],
         },
     }).of("/message");
-
+    let users = [];
     io.on("connection", (socket) => {
         socket.on("addUser", (userId) => {
             if (!users.some((user) => user.userId === userId)) {
