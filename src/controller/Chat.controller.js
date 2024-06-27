@@ -77,6 +77,7 @@ const createGroup = async (req, res) => {
             return contact._id;
         })
     );
+    res.status(200).json({ message: "Group created" });
 };
 
 const fetchMessage = async (req, res) => {
@@ -138,7 +139,6 @@ const fetchMessage = async (req, res) => {
 
 const sendMessage = async (io, users, chatId, userId, message) => {
     const chat = await Chat.findById(chatId);
-    console.log(chat);
     if (!chat) {
         throw new Error({ message: "Chat not found" });
     }
@@ -156,7 +156,7 @@ const sendMessage = async (io, users, chatId, userId, message) => {
     chat.users.forEach((user) => {
         if (user !== userId && users.some((u) => u.userId === user)) {
             const socketId = users.find((u) => u.userId === user).socketId;
-            io.to(socketId).emit("getMessage", chatId, userId, message);
+            io.to(socketId).emit("getMessage", { chatId, userId, message });
         }
     });
 };
