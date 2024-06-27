@@ -151,8 +151,9 @@ const sendMessage = async (io, users, chatId, userId, message) => {
     await Chat.findByIdAndUpdate(chatId, {
         messages,
     });
-
+    console.log("checkUser:", users);
     chat.users.forEach((user) => {
+        console.log("every User: ", user);
         if (
             user.toString() !== userId &&
             users.some((u) => u.userId === user.toString())
@@ -160,6 +161,7 @@ const sendMessage = async (io, users, chatId, userId, message) => {
             const socketId = users.find(
                 (u) => u.userId === user.toString()
             ).socketId;
+            console.log("socketId: ", user, socketId);
             io.to(socketId).emit("getMessage", { chatId, userId, message });
         }
     });
