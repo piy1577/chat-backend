@@ -138,23 +138,20 @@ const fetchMessage = async (req, res) => {
 
 const sendMessage = async (io, users, chatId, userId, message) => {
     const chat = await Chat.findById(chatId);
+    console.log(chat);
     if (!chat) {
-        return { error: "Chat not found" };
+        throw new Error({ message: "Chat not found" });
     }
 
     if (!chat.users.includes(userId)) {
-        return { error: "You are not authorized to send messages" };
+        throw new Error({ message: "You are not authorized to send messages" });
     }
 
     const messages = [{ sender: userId, message }, ...chat.messages];
 
-    await Chat.findByIdAndUpdate(
-        chatId,
-        {
-            messages,
-        },
-        { new: true }
-    );
+    await Chat.findByIdAndUpdate(chatId, {
+        messages,
+    });
 
     chat.users.forEach((user) => {
         if (user !== userId && users.some((u) => u.userId === user)) {
@@ -185,7 +182,8 @@ const socket = (server) => {
             io.emit("getUsers", users);
         });
 
-        socket.on("sendMessage", (chatId, userId, message) => {
+        socket.on("sendMessage", ({ chatId, userId, message }) => {
+            console.log(chatId, userId, message);
             sendMessage(io, users, chatId, userId, message);
         });
     });
