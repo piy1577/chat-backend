@@ -170,7 +170,7 @@ const socket = (server) => {
             origin: "*",
             methods: ["GET", "POST"],
         },
-    }).of("/chat");
+    }).of("/message");
     const users = [];
     io.on("connection", (socket) => {
         socket.on("addUser", (userId) => {
