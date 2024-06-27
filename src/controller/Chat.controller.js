@@ -3,6 +3,7 @@ const User = require("../model/User.model");
 const jwt = require("jsonwebtoken");
 const secret = process.env.SECRET;
 const socketio = require("socket.io");
+let users = [];
 const createChat = async (req, res) => {
     const token = req.headers.authorization.split(" ")[1];
     const { email } = req.body;
@@ -135,38 +136,37 @@ const fetchMessage = async (req, res) => {
     }
 };
 
+const sendMessage = async (io, users, chatId, userId, message) => {
+    const chat = await Chat.findById(chatId);
+    if (!chat) {
+        throw new Error({ message: "Chat not found" });
+    }
+
+    if (!chat.users.includes(userId)) {
+        throw new Error({ message: "You are not authorized to send messages" });
+    }
+
+    const messages = [{ sender: userId, message }, ...chat.messages];
+
+    await Chat.findByIdAndUpdate(chatId, {
+        messages,
+    });
+    console.log(users);
+    chat.users.forEach((user) => {
+        console.log(user);
+        if (
+            user.toString() !== userId &&
+            users.some((u) => u.userId === user.toString())
+        ) {
+            const socketId = users.find(
+                (u) => u.userId === user.toString()
+            ).socketId;
+            io.to(socketId).emit("getMessage", { chatId, userId, message });
+        }
+    });
+};
+
 const socket = (server) => {
-    let users = [];
-    const sendMessage = async (io, chatId, userId, message) => {
-        const chat = await Chat.findById(chatId);
-        if (!chat) {
-            throw new Error({ message: "Chat not found" });
-        }
-
-        if (!chat.users.includes(userId)) {
-            throw new Error({
-                message: "You are not authorized to send messages",
-            });
-        }
-
-        const messages = [{ sender: userId, message }, ...chat.messages];
-
-        await Chat.findByIdAndUpdate(chatId, {
-            messages,
-        });
-        console.log(users);
-        chat.users.forEach((user) => {
-            console.log(user);
-            if (user.toString() !== userId) {
-                const socketId = users.find(
-                    (u) => u.userId === user.toString()
-                ).socketId;
-                console.log(socketId);
-                // io.to(socketId).emit("getMessage", { chatId, userId, message });
-            }
-        });
-    };
-
     const io = socketio(server, {
         cors: {
             origin: "*",
@@ -176,9 +176,7 @@ const socket = (server) => {
 
     io.on("connection", (socket) => {
         socket.on("addUser", (userId) => {
-            console.log("addUser", userId);
             if (!users.some((user) => user.userId === userId)) {
-                console.log("addUser2: running");
                 users.push({ userId, socketId: socket.id });
             }
             io.emit("getUsers", users);
@@ -191,7 +189,7 @@ const socket = (server) => {
 
         socket.on("sendMessage", ({ chatId, userId, message }) => {
             console.log(chatId, userId, message);
-            sendMessage(io, chatId, userId, message);
+            sendMessage(io, users, chatId, userId, message);
         });
     });
 };
