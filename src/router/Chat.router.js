@@ -8,6 +8,6 @@ const {
 const chatRouter = Router();
 chatRouter.post("/group", createGroup);
 chatRouter.post("/", createChat);
-chatRouter.get("/", fetchMessage);
+chatRouter.post("/message", fetchMessage);
 
 module.exports = chatRouter;
