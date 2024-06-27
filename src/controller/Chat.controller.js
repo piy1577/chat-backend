@@ -124,12 +124,8 @@ const fetchMessage = async (req, res) => {
         const contactDetails = await User.findById(contact);
         const messages = chat.messages.map((message) => {
             return {
-                message: message.message,
-                sender:
-                    message.sender === user._id
-                        ? user.name
-                        : contactDetails.name,
-                isSender: message.sender === user._id,
+                text: message.message,
+                isSender: message.sender.toString() === user._id.toString(),
             };
         });
 
