@@ -107,7 +107,7 @@ const fetchMessage = async (req, res) => {
                 return {
                     message: message.message,
                     sender: contactDetails.name,
-                    isSender: message.sender === user._id,
+                    isSender: message.sender.toString() === user._id.toString(),
                 };
             })
         );
@@ -153,8 +153,13 @@ const sendMessage = async (io, users, chatId, userId, message) => {
     });
 
     chat.users.forEach((user) => {
-        if (user !== userId && users.some((u) => u.userId === user)) {
-            const socketId = users.find((u) => u.userId === user).socketId;
+        if (
+            user.toString() !== userId &&
+            users.some((u) => u.userId === user.toString())
+        ) {
+            const socketId = users.find(
+                (u) => u.userId === user.toString()
+            ).socketId;
             io.to(socketId).emit("getMessage", { chatId, userId, message });
         }
     });
