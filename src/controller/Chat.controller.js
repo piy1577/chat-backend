@@ -171,7 +171,7 @@ const socket = (server) => {
             methods: ["GET", "POST"],
         },
     }).of("/message");
-    const users = [];
+    let users = [];
     io.on("connection", (socket) => {
         socket.on("addUser", (userId) => {
             if (!users.some((user) => user.userId === userId)) {
