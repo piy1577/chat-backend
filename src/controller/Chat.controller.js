@@ -3,7 +3,7 @@ const User = require("../model/User.model");
 const jwt = require("jsonwebtoken");
 const secret = process.env.SECRET;
 const socketio = require("socket.io");
-
+let users = [];
 const createChat = async (req, res) => {
     const token = req.headers.authorization.split(" ")[1];
     const { email } = req.body;
@@ -136,7 +136,7 @@ const fetchMessage = async (req, res) => {
     }
 };
 
-const sendMessage = async (io, users, chatId, userId, message) => {
+const sendMessage = async (io, chatId, userId, message) => {
     const chat = await Chat.findById(chatId);
     if (!chat) {
         throw new Error({ message: "Chat not found" });
@@ -173,7 +173,7 @@ const socket = (server) => {
             methods: ["GET", "POST"],
         },
     }).of("/message");
-    let users = [];
+
     io.on("connection", (socket) => {
         socket.on("addUser", (userId) => {
             if (!users.some((user) => user.userId === userId)) {
@@ -189,7 +189,7 @@ const socket = (server) => {
 
         socket.on("sendMessage", ({ chatId, userId, message }) => {
             console.log(chatId, userId, message);
-            sendMessage(io, users, chatId, userId, message);
+            sendMessage(io, chatId, userId, message);
         });
     });
 };
