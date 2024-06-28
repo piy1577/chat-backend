@@ -7,7 +7,10 @@ const app = express();
 app.use(express.json());
 app.use(
     cors({
-        origin: "https://chat-application-gold-tau.vercel.app",
+        origin: [
+            "http://localhost:3000",
+            "https://chat-application-gold-tau.vercel.app",
+        ],
     })
 );
 app.use(helmet());
