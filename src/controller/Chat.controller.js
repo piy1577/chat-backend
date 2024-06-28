@@ -182,7 +182,10 @@ const socket = (server) => {
 
         socket.on("disconnect", () => {
             users = users.filter((user) => user.socketId !== socket.id);
-            io.emit("getUsers", users);
+            io.emit(
+                "getUsers",
+                users.map((item) => item.userId)
+            );
         });
 
         socket.on("sendMessage", ({ chatId, userId, message }) => {
