@@ -202,6 +202,8 @@ const getContacts = async (req, res) => {
             return {
                 id: message._id,
                 name: anotherUser.name,
+                group: false,
+                userId: anotherUserId,
                 message:
                     message.messages.length === 0
                         ? []
@@ -211,6 +213,7 @@ const getContacts = async (req, res) => {
             return {
                 id: message._id,
                 name: message.name,
+                group: true,
                 message:
                     message.messages.length === 0
                         ? []
