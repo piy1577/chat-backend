@@ -177,7 +177,10 @@ const socket = (server) => {
             if (!users.some((user) => user.userId === userId)) {
                 users.push({ userId, socketId: socket.id });
             }
-            io.emit("getUsers", users);
+            io.emit(
+                "getUsers",
+                users.map((item) => item.userId)
+            );
         });
 
         socket.on("disconnect", () => {
