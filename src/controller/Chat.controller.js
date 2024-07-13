@@ -5,7 +5,11 @@ const secret = process.env.SECRET;
 const socketio = require("socket.io");
 
 const createChat = async (req, res) => {
-    const token = req.headers.authorization.split(" ")[1];
+    let token = req.headers.authorization;
+    if (!token) {
+        return res.status(401).json({ message: "Token not provided" });
+    }
+    token = token.split(" ")[1];
     const { email } = req.body;
 
     const decoded = jwt.verify(token, secret);
@@ -20,6 +24,12 @@ const createChat = async (req, res) => {
     const contact = await User.findOne({ email: email });
     if (!contact) {
         return res.status(400).json({ message: "User not Register" });
+    }
+
+    if (user._id.toString() === contact._id.toString()) {
+        return res
+            .status(400)
+            .json({ message: "You can't chat with yourself" });
     }
 
     const chats = await Promise.all(
@@ -51,32 +61,68 @@ const createChat = async (req, res) => {
 };
 
 const createGroup = async (req, res) => {
-    const token = req.headers.authorization.split(" ")[1];
+    let token = req.headers.authorization;
+
+    if (!token) {
+        return res.status(401).json({ message: "Token not provided" });
+    }
+    token = token.split(" ")[1];
     const { name, emails } = req.body;
 
-    if (name.trim() === "") {
-        return res.status(400).send("Please provide a name to create a group");
+    if (!name || name.trim() === "") {
+        return res
+            .status(400)
+            .json({ message: "Please provide a name to create a group" });
     }
-    if (emails.length === 0) {
-        return res.status(400).send("Please provide emails to create a group");
+    if (!emails || emails.length === 0) {
+        return res
+            .status(400)
+            .json({ message: "Please provide emails to create a group" });
     }
 
     const decoded = jwt.verify(token, secret);
 
     const user = await User.findById(decoded.id);
     if (!user) {
-        return res.status(401).send("You are not authorized to create a group");
+        return res
+            .status(401)
+            .json({ message: "You are not authorized to create a group" });
     }
 
-    const contacts = await Promise.all(
+    let contacts = await Promise.all(
         emails.map(async (email) => {
-            const contact = await User.findOne({ email: email });
+            const contact = await User.findOne({ email });
             if (!contact) {
-                return res.status(400).send("User not Register");
+                return null;
             }
-            return contact._id;
+            return contact._id.toString();
         })
     );
+
+    if (contacts.includes(null)) {
+        return res.status(400).json({ message: "Please provide valid emails" });
+    }
+    contacts = contacts.filter((contact) => contact !== user._id.toString());
+
+    if (contacts.length === 0) {
+        return res.status(400).json({ message: "Please provide valid emails" });
+    }
+    const chat = await Chat.create({
+        name,
+        users: [user._id, ...contacts],
+        messages: [],
+    });
+
+    await User.findByIdAndUpdate(user._id, {
+        $push: { chat: chat._id },
+    });
+
+    contacts.map(async (contact) => {
+        await User.findByIdAndUpdate(contact, {
+            $push: { chat: chat._id },
+        });
+    });
+
     res.status(200).json({ message: "Group created" });
 };
 
