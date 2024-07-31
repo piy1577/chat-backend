@@ -9,13 +9,14 @@ const {
     Me,
 } = require("../controller/User.controller");
 const userRouter = Router();
+const verifyUser = require("../Middleware/verifyUser");
 
 userRouter.post("/login", login);
 userRouter.post("/register", register);
 userRouter.put("/forgotPassword", forgotPassword);
 userRouter.get("/reset-password", resetPassword);
 userRouter.post("/reset-password", changePassword);
-userRouter.get("/getContacts", getContacts);
-userRouter.get("/", Me);
+userRouter.get("/getContacts", verifyUser, getContacts);
+userRouter.get("/", verifyUser, Me);
 
 module.exports = userRouter;

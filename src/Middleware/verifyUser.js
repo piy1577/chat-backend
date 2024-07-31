@@ -20,4 +20,4 @@ const verifyUser = async (req, res, next) => {
     next();
 };
 
-export default verifyUser;
+module.exports = verifyUser;

@@ -4,10 +4,11 @@ const {
     createGroup,
     fetchMessage,
 } = require("../controller/Chat.controller");
+const verifyUser = require("../Middleware/verifyUser");
 
 const chatRouter = Router();
-chatRouter.post("/group", createGroup);
-chatRouter.post("/", createChat);
-chatRouter.post("/message", fetchMessage);
+chatRouter.post("/group", verifyUser, createGroup);
+chatRouter.post("/", verifyUser, createChat);
+chatRouter.post("/message", verifyUser, fetchMessage);
 
 module.exports = chatRouter;
