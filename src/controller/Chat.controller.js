@@ -1,25 +1,10 @@
 const Chat = require("../model/Chat.model");
 const User = require("../model/User.model");
-const jwt = require("jsonwebtoken");
-const secret = process.env.SECRET;
 const socketio = require("socket.io");
 
 const createChat = async (req, res) => {
-    let token = req.headers.authorization;
-    if (!token) {
-        return res.status(401).json({ message: "Token not provided" });
-    }
-    token = token.split(" ")[1];
+    const user = req.body.user;
     const { email } = req.body;
-
-    const decoded = jwt.verify(token, secret);
-
-    const user = await User.findById(decoded.id);
-    if (!user) {
-        return res
-            .status(401)
-            .json({ message: "You are not authorized to create a chat" });
-    }
 
     const contact = await User.findOne({ email: email });
     if (!contact) {
@@ -61,12 +46,6 @@ const createChat = async (req, res) => {
 };
 
 const createGroup = async (req, res) => {
-    let token = req.headers.authorization;
-
-    if (!token) {
-        return res.status(401).json({ message: "Token not provided" });
-    }
-    token = token.split(" ")[1];
     const { name, emails } = req.body;
 
     if (!name || name.trim() === "") {
@@ -80,14 +59,7 @@ const createGroup = async (req, res) => {
             .json({ message: "Please provide emails to create a group" });
     }
 
-    const decoded = jwt.verify(token, secret);
-
-    const user = await User.findById(decoded.id);
-    if (!user) {
-        return res
-            .status(401)
-            .json({ message: "You are not authorized to create a group" });
-    }
+    const user = req.body.user;
 
     let contacts = await Promise.all(
         emails.map(async (email) => {
@@ -127,16 +99,8 @@ const createGroup = async (req, res) => {
 };
 
 const fetchMessage = async (req, res) => {
-    const token = req.headers.authorization.split(" ")[1];
     const { id } = req.body;
-
-    const decoded = jwt.verify(token, secret);
-
-    const user = await User.findById(decoded.id);
-    if (!user) {
-        return res.status(401).send("You are not authorized to fetch messages");
-    }
-
+    const user = req.body.user;
     const chat = await Chat.findById(id);
     if (!chat) {
         return res.status(400).send("Chat not found");

@@ -31,9 +31,15 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign({ id: user._id }, secret, { expiresIn: "30d" });
+
+    res.Cookie("token", token, {
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        sameSite: "strict",
+    });
+
     res.status(200).json({
         user: { name: user.name, email: user.email },
-        token,
     });
 };
 
@@ -54,9 +60,14 @@ const register = async (req, res) => {
     }
     const token = jwt.sign({ id: user._id }, secret, { expiresIn: "30d" });
 
+    res.cookie("token", token, {
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        sameSite: "strict",
+    });
+
     res.status(200).json({
         user: { id: user._id, name: user.name, email: user.email },
-        token,
     });
 };
 
@@ -120,30 +131,12 @@ const changePassword = async (req, res) => {
 };
 
 const Me = async (req, res) => {
-    var token = req.headers.authorization;
-    if (!token) {
-        return res.status(401).json({ message: "Token not found" });
-    }
-    token = token.split(" ")[1];
-    const decoded = jwt.verify(token, secret);
-    const user = await User.findById(decoded.id);
-    if (!user) {
-        return res.status(401).json({ message: "User not found" });
-    }
+    const user = req.body.user;
     res.status(200).json({ id: user._id, name: user.name, email: user.email });
 };
 
 const getContacts = async (req, res) => {
-    let token = req.headers.authorization;
-    if (!token) {
-        return res.status(401).json({ message: "Token not provided" });
-    }
-    token = token.split(" ")[1];
-    const decoded = jwt.verify(token, secret);
-    const user = await User.findById(decoded.id);
-    if (!user) {
-        return res.status(401).json({ message: "User not found" });
-    }
+    const user = req.body.user;
     const contact = user.chat.map(async (chat) => {
         const message = await Chat.findById(chat);
         if (message.users.length === 2) {

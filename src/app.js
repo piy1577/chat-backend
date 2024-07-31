@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const helmet = require("helmet");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 app.use(express.json());
@@ -16,6 +17,8 @@ app.use(
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "..", "views")));
+app.use(cookieParser());
+
 app.set("view engine", "ejs");
 app.get("/", (req, res) => {
     res.send("Hello World");
