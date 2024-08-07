@@ -6,12 +6,14 @@ const {
     resetPassword,
     changePassword,
     getContacts,
+    logout,
     Me,
 } = require("../controller/User.controller");
 const userRouter = Router();
 const verifyUser = require("../Middleware/verifyUser");
 
 userRouter.post("/login", login);
+userRouter.post("/logout", logout);
 userRouter.post("/register", register);
 userRouter.put("/forgotPassword", forgotPassword);
 userRouter.get("/reset-password", resetPassword);

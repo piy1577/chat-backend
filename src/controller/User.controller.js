@@ -174,6 +174,11 @@ const getContacts = async (req, res) => {
         .json(contact.length === 0 ? [] : await Promise.all(contact));
 };
 
+const logout = async (req, res) => {
+    res.clearCookie("token");
+    res.status(200).json({ message: "Logged out" });
+};
+
 module.exports = {
     login,
     register,
@@ -182,4 +187,5 @@ module.exports = {
     changePassword,
     Me,
     getContacts,
+    logout,
 };
