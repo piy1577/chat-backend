@@ -35,7 +35,7 @@ const login = async (req, res) => {
     res.cookie("token", token, {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: "None",
     });
 
     res.status(200).json({
@@ -63,7 +63,7 @@ const register = async (req, res) => {
     res.cookie("token", token, {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: "None",
     });
 
     res.status(200).json({
