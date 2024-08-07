@@ -36,6 +36,7 @@ const login = async (req, res) => {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         httpOnly: true,
         sameSite: "None",
+        secure: true,
     });
 
     res.status(200).json({
@@ -64,6 +65,7 @@ const register = async (req, res) => {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         httpOnly: true,
         sameSite: "None",
+        secure: true,
     });
 
     res.status(200).json({
