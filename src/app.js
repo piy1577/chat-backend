@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
 app.use(
     cors({
@@ -12,12 +13,12 @@ app.use(
             "http://localhost:3000",
             "https://chat-application-gold-tau.vercel.app",
         ],
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE"],
     })
 );
 app.use(helmet());
-app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "..", "views")));
-app.use(cookieParser());
 
 app.set("view engine", "ejs");
 app.get("/", (req, res) => {

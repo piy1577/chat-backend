@@ -32,7 +32,7 @@ const login = async (req, res) => {
 
     const token = jwt.sign({ id: user._id }, secret, { expiresIn: "30d" });
 
-    res.Cookie("token", token, {
+    res.cookie("token", token, {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         httpOnly: true,
         sameSite: "strict",

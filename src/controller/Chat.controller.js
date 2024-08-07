@@ -8,7 +8,7 @@ const createChat = async (req, res) => {
 
     const contact = await User.findOne({ email: email });
     if (!contact) {
-        return res.status(400).json({ message: "User not Register" });
+        return res.status(400).json({ message: "User not Found" });
     }
 
     if (user._id.toString() === contact._id.toString()) {
